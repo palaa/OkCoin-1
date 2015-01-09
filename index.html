@@ -3,6 +3,7 @@
         <script>
         var last1;
         var last2;
+        var i;
             function start(){
                var xmlhttp;
                     if(window.XMLHttpRequest){
@@ -15,7 +16,7 @@
 			            //console.log(xmlhttp.responseText);
                             last1 = xmlhttp.responseText.split("/")[0];
                             last2 = xmlhttp.responseText.split("/")[1];
-                            setInterval(function(){check()}, 3000);
+                            i = setInterval(function(){check()}, 3000);
 			          }
 		            	}
                         xmlhttp.open("GET", "https://okcoin-bot-deathslocus1.c9.io/buy.php", true);
@@ -33,7 +34,13 @@
                     }
                     	xmlhttp.onreadystatechange=function(){
 			          if(xmlhttp.readyState==4&&xmlhttp.status==200){
-			          console.log("Checked " + xmlhttp.responseText);
+			          if(xmlhttp.responseText.indexOf("YES") > -1){
+			               clearInterval(i);
+			              start();
+			              console.log(xmlhttp.responseText);
+			          }else{
+			              console.log(xmlhttp.responseText);
+			          }
 			          }
 		            	}
                         xmlhttp.open("GET", "https://okcoin-bot-deathslocus1.c9.io/sell.php?last="+last1+"&last1="+last2, true);
@@ -41,7 +48,7 @@
                         xmlhttp.send();
             }
             function Continue(){
-                setInterval(function(){check()}, 10000);
+                i = setInterval(function(){check()}, 3000);
             }
 
             function stop(){

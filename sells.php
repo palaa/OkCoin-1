@@ -1,12 +1,11 @@
 <?php
-$thisWeek;
-$nextWeek;
+$thisweek;
+$nextweek;
 $apiKey = "0ab6b9c6-1773-42b0-b158-624881574376";
 $secretKey = "CB5E47EAB416E4CAB656C00789D69D9A";
-
-ini_set('display_errors', 'On');
 getPrices();
-buyAll();
+ini_set('display_errors', 'On');
+lastAll();
 function makeOrder($price, $los, $quant, $tof, $apiKey, $secretKey){
    // getPrices();
     
@@ -19,30 +18,31 @@ function makeOrder($price, $los, $quant, $tof, $apiKey, $secretKey){
     doPost("https://www.okcoin.com/api/v1/future_trade.do", $urlsd);
     
 }
-function buyAll(){
-    global $thisWeek, $nextWeek, $apiKey, $secretKey;
-//    if($thisWeek > $nextWeek){
-if($thisWeek < $nextWeek){
-    makeOrder($thisWeek, 1, 1, "this_week", $apiKey, $secretKey);
- makeOrder($nextWeek, 2, 1, "next_week", $apiKey, $secretKey);
+function lastAll(){
+    global $nextWeek, $thisWeek, $apiKey, $secretKey;
+    if(     ((($_GET['last'] - $thisWeek)/$_GET['last']) + (($nextWeek-$_GET['last1'])/$nextWeek)) > 0.002){
+   
+        echo "Profit " . ((($_GET['last'] - $thisWeek)/$_GET['last']) + (($nextWeek-$_GET['last1'])/$nextWeek));
+         makeOrder($thisWeek, "4", "1", "next_week", $apiKey, $secretKey);
+          makeOrder($nextWeek, "3", "1", "quarter", $apiKey, $secretKey);
     }else{
-        getPrices();
-        buyAll();
+        echo "No Profit " . ((($_GET['last'] - $thisWeek)/$_GET['last']) + (($nextWeek-$_GET['last1'])/$nextWeek));
+        echo $nextWeek . " / " . $thisWeek;
     }
 }
 
 function getPrices(){
    global $thisWeek, $nextWeek;
-    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=this_week");
-    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
+    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
+    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=quarter");
 
     $thisWeek = json_decode($temp3, true);
     $nextWeek = json_decode($temp2, true);
  //   var_dump($thisWeek);
      //var_dump($thisWeek["ticker"]);
-    echo  $thisWeek["ticker"]["sell"] . "/" . $nextWeek["ticker"]["buy"];
-    $thisWeek = $thisWeek["ticker"]["sell"];
-    $nextWeek =  $nextWeek["ticker"]["buy"];
+   // echo  $thisWeek["ticker"]["last"] . " " . $nextWeek["ticker"]["last"];
+    $thisWeek = $thisWeek["ticker"]["last"];
+    $nextWeek =  $nextWeek["ticker"]["last"];
 }
 function doGet($url){
     $ch = curl_init($url);
@@ -57,7 +57,7 @@ function doPost($url, $urls){
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $urls);
     $server_output = curl_exec($ch);
-    //echo $server_output;
+    echo $server_output;
     curl_close($ch);
     return $server_output;
 }

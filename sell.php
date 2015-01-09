@@ -20,20 +20,24 @@ function makeOrder($price, $los, $quant, $tof, $apiKey, $secretKey){
 }
 function sellAll(){
     global $nextWeek, $thisWeek, $apiKey, $secretKey;
-    if((($nextWeek - $_GET['last1'])+($_GET['last'] - $thisWeek))<=-0.002){
-        echo "Profit " . (($nextWeek - $_GET['last1'])+($_GET['last'] - $thisWeek));
-         makeOrder($thisWeek, "3", "1", "next_week", $apiKey, $secretKey);
-          makeOrder($nextWeek, "4", "1", "quarter", $apiKey, $secretKey);
+    $profit = (($_GET['last1'] - $nextWeek)+($thisWeek-$_GET['last']));
+    if($profit > 0.004){
+   
+        
+         makeOrder($thisWeek, "3", "1", "this_week", $apiKey, $secretKey);
+          makeOrder($nextWeek, "4", "1", "next_week", $apiKey, $secretKey);
+            echo "YES " . $thisWeek . "/" . $nextWeek . " Profit:" . $profit;  
+         
     }else{
-        echo "No Profit " . (($nextWeek - $_GET['last1'])+($_GET['last'] - $thisWeek));
-        echo $nextWeek . " / " . $thisWeek;
+      echo "NO " . $thisWeek . "/" . $nextWeek . " Profit:" . $profit;
+        
     }
 }
 
 function getPrices(){
    global $thisWeek, $nextWeek;
-    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
-    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=quarter");
+    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=this_week");
+    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
 
     $thisWeek = json_decode($temp3, true);
     $nextWeek = json_decode($temp2, true);

@@ -22,9 +22,9 @@ function makeOrder($price, $los, $quant, $tof, $apiKey, $secretKey){
 function buyAll(){
     global $thisWeek, $nextWeek, $apiKey, $secretKey;
 //    if($thisWeek > $nextWeek){
-if($thisWeek < $nextWeek){
-    makeOrder($thisWeek, 1, 1, "this_week", $apiKey, $secretKey);
- makeOrder($nextWeek, 2, 1, "next_week", $apiKey, $secretKey);
+if(true){
+    makeOrder($thisWeek, 2, 1, "next_week", $apiKey, $secretKey);
+ makeOrder($nextWeek, 1, 1, "quarter", $apiKey, $secretKey);
     }else{
         getPrices();
         buyAll();
@@ -33,16 +33,16 @@ if($thisWeek < $nextWeek){
 
 function getPrices(){
    global $thisWeek, $nextWeek;
-    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=this_week");
-    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
+    $temp3 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=next_week");
+    $temp2 = doGet("https://www.okcoin.com/api/v1/future_ticker.do?symbol=ltc_usd&contract_type=quarter");
 
     $thisWeek = json_decode($temp3, true);
     $nextWeek = json_decode($temp2, true);
  //   var_dump($thisWeek);
      //var_dump($thisWeek["ticker"]);
-    echo  $thisWeek["ticker"]["sell"] . "/" . $nextWeek["ticker"]["buy"];
-    $thisWeek = $thisWeek["ticker"]["sell"];
-    $nextWeek =  $nextWeek["ticker"]["buy"];
+    echo  $thisWeek["ticker"]["last"] . "/" . $nextWeek["ticker"]["last"];
+    $thisWeek = $thisWeek["ticker"]["last"];
+    $nextWeek =  $nextWeek["ticker"]["last"];
 }
 function doGet($url){
     $ch = curl_init($url);
