@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <script>
+        var last1;
+        var last2;
+            function start(){
+               var xmlhttp;
+                    if(window.XMLHttpRequest){
+                        xmlhttp=new XMLHttpRequest();
+                    }else{
+                         xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    	xmlhttp.onreadystatechange=function(){
+			          if(xmlhttp.readyState==4&&xmlhttp.status==200){
+			            //console.log(xmlhttp.responseText);
+                            last1 = xmlhttp.responseText.split("/")[0];
+                            last2 = xmlhttp.responseText.split("/")[1];
+                            setInterval(function(){check()}, 3000);
+			          }
+		            	}
+                        xmlhttp.open("GET", "https://okcoin-bot-deathslocus1.c9.io/buy.php", true);
+        			    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xmlhttp.send();
+                
+            }
+            function check(){
+                 var xmlhttp;
+                 console.log(last2 + " " + last1);
+                    if(window.XMLHttpRequest){
+                        xmlhttp=new XMLHttpRequest();
+                    }else{
+                         xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    	xmlhttp.onreadystatechange=function(){
+			          if(xmlhttp.readyState==4&&xmlhttp.status==200){
+			          console.log("Checked " + xmlhttp.responseText);
+			          }
+		            	}
+                        xmlhttp.open("GET", "https://okcoin-bot-deathslocus1.c9.io/sell.php?last="+last1+"&last1="+last2, true);
+        			    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xmlhttp.send();
+            }
+            function Continue(){
+                setInterval(function(){check()}, 10000);
+            }
+
+            function stop(){
+                   var xmlhttp;
+                    if(window.XMLHttpRequest){
+                        xmlhttp=new XMLHttpRequest();
+                    }else{
+                         xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    	xmlhttp.onreadystatechange=function(){
+			          if(xmlhttp.readyState==4&&xmlhttp.status==200){
+			            //console.log(xmlhttp.responseText);
+                            last1 = xmlhttp.responseText.split("/")[0];
+                            last2 = xmlhttp.responseText.split("/")[1];
+			          }
+		            	}
+                        xmlhttp.open("GET", "https://okcoin-bot-deathslocus1.c9.io/sell.php?last="+last1+"&last1="+last2, true);
+        			    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xmlhttp.send();
+                
+            }
+        </script>
+    </head>
+    <body>
+        <button onclick="start()">Start</button>
+        <button onclick="check()">Continue</button>
+        <button onclick="check()">Stop</button>
+    </body>
+</html>
