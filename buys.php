@@ -1,8 +1,8 @@
 <?php
 $thisWeek;
 $nextWeek;
-$apiKey = "0ab6b9c6-1773-42b0-b158-624881574376";
-$secretKey = "CB5E47EAB416E4CAB656C00789D69D9A";
+$apiKey = ;
+$secretKey = ;
 
 ini_set('display_errors', 'On');
 getPrices();
